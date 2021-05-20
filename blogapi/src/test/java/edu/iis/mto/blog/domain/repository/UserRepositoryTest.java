@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ class UserRepositoryTest {
     void setUp() {
         user = new User();
         user.setFirstName("Jan");
+        user.setLastName("Bean");
         user.setEmail("john@domain.com");
         user.setAccountStatus(AccountStatus.NEW);
     }
@@ -61,6 +63,20 @@ class UserRepositoryTest {
         User persistedUser = repository.save(user);
 
         assertThat(persistedUser.getId(), notNullValue());
+    }
+
+    @Test
+    void shouldNotFindUserNorByFirstNameLastNameAndEmail() {
+        // given
+        User savedUser = repository.save(user);
+        final int expectedCountOfUsersFound = 0;
+
+        // when
+        List<User> usersFound = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("Jakub", "Reszka", "gmail");
+
+        // then
+        int countOfUsersFound = usersFound.size();
+        assertEquals(expectedCountOfUsersFound, countOfUsersFound);
     }
 
 }
