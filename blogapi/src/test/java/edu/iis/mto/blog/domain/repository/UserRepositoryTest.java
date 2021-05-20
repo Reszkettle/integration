@@ -115,4 +115,19 @@ class UserRepositoryTest {
         assertEquals(savedUser, usersFound.get(0));
     }
 
+    @Test
+    void shouldFindUserByEmailIgnoringCase() {
+        // given
+        User savedUser = repository.save(user);
+        final int expectedCountOfUsersFound = 1;
+
+        // when
+        List<User> usersFound = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(SAMPLE_NOT_MATCHING_FIRSTNAME, SAMPLE_NOT_MATCHING_LASTNAME, "JOhN@domaIn.com");
+
+        // then
+        int countOfUsersFound = usersFound.size();
+        assertEquals(expectedCountOfUsersFound, countOfUsersFound);
+        assertEquals(savedUser, usersFound.get(0));
+    }
+
 }
