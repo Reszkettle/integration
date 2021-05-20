@@ -29,6 +29,12 @@ class UserRepositoryTest {
 
     private User user;
 
+    private final static String SAMPLE_NOT_MATCHING_FIRSTNAME = "Jakub";
+    private final static String SAMPLE_NOT_MATCHING_LASTNAME = "Reszka";
+    private final static String SAMPLE_NOT_MATCHING_EMAIL = "gmail";
+
+
+
     @BeforeEach
     void setUp() {
         user = new User();
@@ -72,11 +78,26 @@ class UserRepositoryTest {
         final int expectedCountOfUsersFound = 0;
 
         // when
-        List<User> usersFound = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("Jakub", "Reszka", "gmail");
+        List<User> usersFound = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(SAMPLE_NOT_MATCHING_FIRSTNAME, SAMPLE_NOT_MATCHING_LASTNAME, SAMPLE_NOT_MATCHING_EMAIL);
 
         // then
         int countOfUsersFound = usersFound.size();
         assertEquals(expectedCountOfUsersFound, countOfUsersFound);
+    }
+
+    @Test
+    void shouldFindUserByFirstNameIgnoringCase() {
+        // given
+        User savedUser = repository.save(user);
+        final int expectedCountOfUsersFound = 1;
+
+        // when
+        List<User> usersFound = repository.findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("jan", SAMPLE_NOT_MATCHING_LASTNAME, SAMPLE_NOT_MATCHING_EMAIL);
+
+        // then
+        int countOfUsersFound = usersFound.size();
+        assertEquals(expectedCountOfUsersFound, countOfUsersFound);
+        assertEquals(savedUser, usersFound.get(0));
     }
 
 }
