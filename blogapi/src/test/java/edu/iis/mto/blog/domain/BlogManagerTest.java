@@ -4,8 +4,10 @@ import edu.iis.mto.blog.api.request.UserRequest;
 import edu.iis.mto.blog.domain.errors.DomainError;
 import edu.iis.mto.blog.domain.model.AccountStatus;
 import edu.iis.mto.blog.domain.model.BlogPost;
+import edu.iis.mto.blog.domain.model.LikePost;
 import edu.iis.mto.blog.domain.model.User;
 import edu.iis.mto.blog.domain.repository.BlogPostRepository;
+import edu.iis.mto.blog.domain.repository.LikePostRepository;
 import edu.iis.mto.blog.domain.repository.UserRepository;
 import edu.iis.mto.blog.services.BlogService;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import javax.lang.model.util.Types;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,11 +41,17 @@ class BlogManagerTest {
     @MockBean
     private BlogPostRepository blogPostRepository;
 
+    @MockBean
+    private LikePostRepository likePostRepository;
+
     @Autowired
     private BlogService blogService;
 
     @Captor
     private ArgumentCaptor<User> userParam;
+
+    @Captor
+    private ArgumentCaptor<LikePost> likePostParam;
 
     private User samplePostCreator;
     private User samplePostLiker;
@@ -91,6 +101,27 @@ class BlogManagerTest {
         // when & then
         DomainError domainError = assertThrows(DomainError.class, () -> blogService.addLikeToPost(samplePostLiker.getId(), sampleBlogPost.getId()));
         assertEquals(DomainError.USER_NOT_CONFIRMED, domainError.getMessage());
+    }
+
+    @Test
+    void shouldSuccessfullyLikePostWhenUserIsConfirmed() {
+        // given
+        int expectedNumberOfCapturedLikePosts = 1;
+        samplePostLiker.setAccountStatus(AccountStatus.CONFIRMED);
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(samplePostLiker));
+        when(blogPostRepository.findById(any(Long.class))).thenReturn(Optional.of(sampleBlogPost));
+        when(likePostRepository.findByUserAndPost(any(User.class), any(BlogPost.class))).thenReturn(Optional.empty());
+
+        // when
+        blogService.addLikeToPost(samplePostLiker.getId(), sampleBlogPost.getId());
+
+        // then
+        verify(likePostRepository).save(likePostParam.capture());
+        List<LikePost> capturedLikePosts = likePostParam.getAllValues();
+        assertEquals(expectedNumberOfCapturedLikePosts, capturedLikePosts.size());
+        LikePost capturedLikePost = capturedLikePosts.get(0);
+        assertEquals(samplePostLiker, capturedLikePost.getUser());
+        assertEquals(sampleBlogPost, capturedLikePost.getPost());
     }
 
 
