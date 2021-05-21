@@ -1,13 +1,11 @@
 package edu.iis.mto.blog.rest.test;
 
-import static io.restassured.RestAssured.given;
-
-import io.restassured.http.Header;
+import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.http.ContentType;
+import static io.restassured.RestAssured.given;
 
 class CreateUserTest extends FunctionalTests {
 
@@ -17,7 +15,7 @@ class CreateUserTest extends FunctionalTests {
     void createUserWithProperDataReturnsCreatedStatus() {
         JSONObject jsonObj = new JSONObject().put("email", "tracy1@domain.com");
         given().accept(ContentType.JSON)
-               .header("Content-Type", "application/json;charset=UTF-8")
+               .header(FuncTestsUtils.header)
                .body(jsonObj.toString())
                .expect()
                .log()
@@ -31,15 +29,14 @@ class CreateUserTest extends FunctionalTests {
     void shouldReturn409StatusCodeOnCreateWhenUserAlreadyExists() {
         JSONObject jsonObj = new JSONObject().put("email", "tracy1@domain.com");
         String jsonString = jsonObj.toString();
-        Header header = new Header("Content-Type", "application/json;charset=UTF-8");
 
         given().accept(ContentType.JSON)
-                .header(header)
+                .header(FuncTestsUtils.header)
                 .body(jsonString)
                 .post(USER_API);
 
         given().accept(ContentType.JSON)
-                .header(header)
+                .header(FuncTestsUtils.header)
                 .body(jsonString)
                 .then()
                 .statusCode(HttpStatus.SC_CONFLICT)
