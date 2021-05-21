@@ -123,7 +123,7 @@ public class LikePostRepositoryTest {
         // then
         assertTrue(likePostFound.isPresent());
         LikePost retrievedLikePost = likePostFound.get();
-        assertEquals(likePost, retrievedLikePost);
+        assertEquals(likePost.getId(), retrievedLikePost.getId());
         assertEquals(likePost.getPost(), retrievedLikePost.getPost());
         assertEquals(likePost.getUser(), retrievedLikePost.getUser());
     }
