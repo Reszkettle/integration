@@ -53,4 +53,21 @@ public class LikePostRepositoryTest {
         sampleUser = userRepository.save(sampleUser);
     }
 
+
+    @Test
+    void shouldSaveOneLikePost() {
+        // given
+        LikePost likePost = new LikePost();
+        likePost.setPost(sampleBlogPost);
+        likePost.setUser(sampleUser);
+        int expectedNumberOfSavedLikePosts = 1;
+
+        // when
+        LikePost savedLikePost = likePostRepository.save(likePost);
+
+        // then
+        List<LikePost> allSavedLikePosts = likePostRepository.findAll();
+        assertEquals(expectedNumberOfSavedLikePosts, allSavedLikePosts.size());
+        assertEquals(savedLikePost, allSavedLikePosts.get(0));
+    }
 }
