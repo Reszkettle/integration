@@ -4,7 +4,6 @@ import edu.iis.mto.blog.domain.model.AccountStatus;
 import edu.iis.mto.blog.domain.model.BlogPost;
 import edu.iis.mto.blog.domain.model.LikePost;
 import edu.iis.mto.blog.domain.model.User;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DataJpaTest
 public class LikePostRepositoryTest {
@@ -70,4 +70,19 @@ public class LikePostRepositoryTest {
         assertEquals(expectedNumberOfSavedLikePosts, allSavedLikePosts.size());
         assertEquals(savedLikePost, allSavedLikePosts.get(0));
     }
+    
+    @Test
+    void shouldThrowExceptionWhenSavingLikePostWithUserThatHasNotBeenSaved() {
+        // given
+        User notSavedUser = new User();
+        LikePost likePost = new LikePost();
+        likePost.setPost(sampleBlogPost);
+        likePost.setUser(notSavedUser);
+
+        // when & then
+        assertThrows(Exception.class, () -> likePostRepository.save(likePost));
+    }
+
+
+
 }
