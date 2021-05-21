@@ -83,6 +83,18 @@ public class LikePostRepositoryTest {
         assertThrows(Exception.class, () -> likePostRepository.save(likePost));
     }
 
+    @Test
+    void shouldThrowExceptionWhenSavingLikePostWithBlogPostThatHasNotBeenSaved() {
+        // given
+        BlogPost notSavedBlogPost = new BlogPost();
+        LikePost likePost = new LikePost();
+        likePost.setPost(notSavedBlogPost);
+        likePost.setUser(sampleUser);
+
+        // when & then
+        assertThrows(Exception.class, () -> likePostRepository.save(likePost));
+    }
+
 
 
 }
