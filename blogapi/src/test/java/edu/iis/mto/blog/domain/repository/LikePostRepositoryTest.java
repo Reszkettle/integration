@@ -5,15 +5,15 @@ import edu.iis.mto.blog.domain.model.BlogPost;
 import edu.iis.mto.blog.domain.model.LikePost;
 import edu.iis.mto.blog.domain.model.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 public class LikePostRepositoryTest {
@@ -39,7 +39,7 @@ public class LikePostRepositoryTest {
     private void createSaveSampleBlogPost() {
         sampleBlogPost = new BlogPost();
         sampleBlogPost.setEntry("entry");
-        sampleBlogPost.setLikes(new LinkedList<>());
+        sampleBlogPost.setLikes(Collections.emptyList());
         sampleBlogPost.setUser(sampleUser);
         blogPostRepository.save(sampleBlogPost);
     }
@@ -70,7 +70,7 @@ public class LikePostRepositoryTest {
         assertEquals(expectedNumberOfSavedLikePosts, allSavedLikePosts.size());
         assertEquals(savedLikePost, allSavedLikePosts.get(0));
     }
-    
+
     @Test
     void shouldThrowExceptionWhenSavingLikePostWithUserThatHasNotBeenSaved() {
         // given
@@ -95,6 +95,9 @@ public class LikePostRepositoryTest {
         assertThrows(Exception.class, () -> likePostRepository.save(likePost));
     }
 
-
+    @Test
+    void shouldNotFindAnyLikePosts() {
+        assertTrue(likePostRepository.findAll().isEmpty());
+    }
 
 }
