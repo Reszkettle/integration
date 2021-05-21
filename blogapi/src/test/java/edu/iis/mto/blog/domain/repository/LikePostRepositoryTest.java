@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -96,8 +97,33 @@ public class LikePostRepositoryTest {
     }
 
     @Test
-    void shouldNotFindAnyLikePosts() {
+    void shouldNotFindAnyLikePostsOnStart() {
         assertTrue(likePostRepository.findAll().isEmpty());
+    }
+
+    @Test
+    void shouldNotFindAnyLikePostsAssociatedWithSampleUserAndBlogPost() {
+        // when
+        Optional<LikePost> likePost = likePostRepository.findByUserAndPost(sampleUser, sampleBlogPost);
+
+        // then
+        assertFalse(likePost.isPresent());
+    }
+
+    @Test
+    void shouldFindLikePostAssociatedWithSampleUserAndBlogPost() {
+        // given
+        LikePost likePost = new LikePost();
+        likePost.setPost(sampleBlogPost);
+        likePost.setUser(sampleUser);
+        likePost = likePostRepository.save(likePost);
+
+        // when
+        Optional<LikePost> likePostFound = likePostRepository.findByUserAndPost(sampleUser, sampleBlogPost);
+
+        // then
+        assertTrue(likePostFound.isPresent());
+        assertEquals(likePost, likePostFound.get());
     }
 
 }
