@@ -5,7 +5,6 @@ import edu.iis.mto.blog.domain.model.BlogPost;
 import edu.iis.mto.blog.domain.model.LikePost;
 import edu.iis.mto.blog.domain.model.User;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -123,7 +122,10 @@ public class LikePostRepositoryTest {
 
         // then
         assertTrue(likePostFound.isPresent());
-        assertEquals(likePost, likePostFound.get());
+        LikePost retrievedLikePost = likePostFound.get();
+        assertEquals(likePost, retrievedLikePost);
+        assertEquals(likePost.getPost(), retrievedLikePost.getPost());
+        assertEquals(likePost.getUser(), retrievedLikePost.getUser());
     }
 
 }
