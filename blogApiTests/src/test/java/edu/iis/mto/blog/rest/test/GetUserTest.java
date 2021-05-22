@@ -14,14 +14,14 @@ public class GetUserTest extends FunctionalTests {
     private static final String FIND_USER_API = "/blog/user/find";
 
     @Test
-    void shouldFindFourUsersByEmailSubstring() {
+    void shouldFindThreeUsersByEmailSubstring() {
         String emailSubstring = "gmail";
 
         given().param("searchString", emailSubstring)
                 .accept(ContentType.JSON)
                 .header(REQUEST_HEADER)
                 .when().get(FIND_USER_API)
-                .then().body("size()", equalTo(4));
+                .then().body("size()", equalTo(3));
     }
 
     @Test
