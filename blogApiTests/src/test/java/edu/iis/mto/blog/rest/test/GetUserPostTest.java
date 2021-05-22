@@ -29,4 +29,21 @@ public class GetUserPostTest extends FunctionalTests {
                .then()
                .body("size()", equalTo(0));
     }
+
+    @Test
+    void shouldReturnOnePostWithOneLike() {
+
+        // given
+        long userId = 4L;
+        long postId = FuncTestsUtils.createSamplePost(userId);
+        FuncTestsUtils.likePost(postId, FuncTestsUtils.CONFIRMED_USER_ID);
+
+        given().header(FuncTestsUtils.REQUEST_HEADER)
+                .accept(ContentType.JSON)
+                .when()
+                .get(GET_USER_POSTS_API, userId)
+                .then()
+                .body("size()", equalTo(1))
+                .body("get(0).likesCount", equalTo(1));
+    }
 }

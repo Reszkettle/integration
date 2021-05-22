@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static edu.iis.mto.blog.rest.test.FuncTestsUtils.likePost;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -50,8 +51,4 @@ public class LikePostTest extends FunctionalTests {
         assertEquals(before, after);
     }
 
-    private void likePost(long postId, long userId) {
-        given().header(FuncTestsUtils.REQUEST_HEADER)
-                .post(LIKE_POST_API, userId, postId);
-    }
 }
