@@ -20,7 +20,7 @@ public class CreatePostTest extends FunctionalTests {
         String jsonString = jsonObj.toString();
 
         given().accept(ContentType.JSON)
-                .header(FuncTestsUtils.HEADER)
+                .header(FuncTestsUtils.REQUEST_HEADER)
                 .body(jsonString)
                 .then()
                 .statusCode(HttpStatus.SC_CREATED)
@@ -35,7 +35,7 @@ public class CreatePostTest extends FunctionalTests {
         String jsonString = jsonObj.toString();
 
         given().accept(ContentType.JSON)
-                .header(FuncTestsUtils.HEADER)
+                .header(FuncTestsUtils.REQUEST_HEADER)
                 .body(jsonString)
                 .then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)

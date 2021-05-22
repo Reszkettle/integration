@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LikePostTest extends FunctionalTests {
 
@@ -26,12 +27,26 @@ public class LikePostTest extends FunctionalTests {
 
     @Test
     void shouldReturnBadRequestStatusWhenAuthorAttemptsToLikeHisOwnPost() {
-        given().header("Content-Type", "application/json;charset=UTF-8")
+        given().header(FuncTestsUtils.REQUEST_HEADER)
                 .expect()
                 .log()
                 .all()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .when()
                 .post(LIKE_POST_API, POST_AUTHOR_ID, POST_ID);
+    }
+
+    @Test
+    void shouldNotAddDuplicatedLikes() {
+        likePost(POST_ID, FuncTestsUtils.NEW_USER_ID);
+        int before = FuncTestsUtils.getCountOfPostLikesForPostById(POST_ID);
+        likePost(POST_ID, FuncTestsUtils.NEW_USER_ID);
+        int after = FuncTestsUtils.getCountOfPostLikesForPostById(POST_ID);
+        assertEquals(before, after);
+    }
+
+    private void likePost(long postId, long userId) {
+        given().header(FuncTestsUtils.REQUEST_HEADER)
+                .post(LIKE_POST_API, userId, postId);
     }
 }

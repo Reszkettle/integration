@@ -15,7 +15,7 @@ class CreateUserTest extends FunctionalTests {
     void createUserWithProperDataReturnsCreatedStatus() {
         JSONObject jsonObj = new JSONObject().put("email", "tracy1@domain.com");
         given().accept(ContentType.JSON)
-               .header(FuncTestsUtils.HEADER)
+               .header(FuncTestsUtils.REQUEST_HEADER)
                .body(jsonObj.toString())
                .expect()
                .log()
@@ -31,12 +31,12 @@ class CreateUserTest extends FunctionalTests {
         String jsonString = jsonObj.toString();
 
         given().accept(ContentType.JSON)
-                .header(FuncTestsUtils.HEADER)
+                .header(FuncTestsUtils.REQUEST_HEADER)
                 .body(jsonString)
                 .post(USER_API);
 
         given().accept(ContentType.JSON)
-                .header(FuncTestsUtils.HEADER)
+                .header(FuncTestsUtils.REQUEST_HEADER)
                 .body(jsonString)
                 .then()
                 .statusCode(HttpStatus.SC_CONFLICT)
