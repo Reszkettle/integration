@@ -38,10 +38,15 @@ public class LikePostTest extends FunctionalTests {
 
     @Test
     void shouldNotAddDuplicatedLikes() {
+        // given
         likePost(POST_ID, FuncTestsUtils.NEW_USER_ID);
         int before = FuncTestsUtils.getCountOfPostLikesForPostById(POST_ID);
+
+        // when
         likePost(POST_ID, FuncTestsUtils.NEW_USER_ID);
         int after = FuncTestsUtils.getCountOfPostLikesForPostById(POST_ID);
+
+        // then
         assertEquals(before, after);
     }
 
