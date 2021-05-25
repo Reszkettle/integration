@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static edu.iis.mto.blog.rest.test.FuncTestsUtils.NEW_USER_ID;
 import static edu.iis.mto.blog.rest.test.FuncTestsUtils.likePost;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,21 +31,29 @@ public class LikePostTest extends FunctionalTests {
     void shouldReturnBadRequestStatusWhenAuthorAttemptsToLikeHisOwnPost() {
         given().header(FuncTestsUtils.REQUEST_HEADER)
                 .expect()
-                .log()
-                .all()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .when()
                 .post(LIKE_POST_API, POST_AUTHOR_ID, POST_ID);
     }
 
     @Test
+    void shouldReturnBadRequestStatusWhenUserIsNotConfirmed() {
+        given().header(FuncTestsUtils.REQUEST_HEADER)
+                .expect()
+                .statusCode(HttpStatus.SC_BAD_REQUEST)
+                .when()
+                .post(LIKE_POST_API, NEW_USER_ID, POST_ID);
+    }
+
+    @Test
     void shouldNotAddDuplicatedLikes() {
         // given
-        likePost(POST_ID, FuncTestsUtils.NEW_USER_ID);
+        long confirmedUserId = 4L;
+        likePost(POST_ID, confirmedUserId);
         int before = FuncTestsUtils.getCountOfPostLikesForPostById(POST_ID);
 
         // when
-        likePost(POST_ID, FuncTestsUtils.NEW_USER_ID);
+        likePost(POST_ID, confirmedUserId);
         int after = FuncTestsUtils.getCountOfPostLikesForPostById(POST_ID);
 
         // then
